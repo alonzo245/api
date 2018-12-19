@@ -7,7 +7,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 var slash = require('slash');
 var helmet = require('helmet');
-var compression = require('compression');
+// var compression = require('compression');
 var morgan = require('morgan');
 const debug = require('debug')('my-namespace')
 // const winston = require('winston')
@@ -24,13 +24,13 @@ debug('booting %s', name)
 
 const app = express();
 
-//SSL Configuration
-const privatKey = fs.readFileSync('server.key');
-const certification = fs.readFileSync('server.cert')
+//SSL Configuration + not working in production
+// const privatKey = fs.readFileSync('server.key');
+// const certification = fs.readFileSync('server.cert')
 
 app.use(helmet());
-// mainly for websites and not apis
-app.use(compression());
+// mainly for websites and not apis + not working on heroku
+// app.use(compression());
 
 // loggin for incoming requests
 const accessLoStream = fs.createWriteStream(
@@ -103,7 +103,8 @@ mongoose
 
   .then(result => {
   // for local testing HTTPS
-    // https.createServer({ key: privatKey, cert: certification }, app).listen(process.env.PORT || 8000);
-    app.listen(process.env.PORT || 8000);
+    // https.createServer({ key: privatKey, cert: certification }, app)
+    //.listen(process.env.PORT || 3000);
+    app.listen(process.env.PORT || 3000);
   })
   .catch(err => console.log('err'));
