@@ -2,10 +2,11 @@ const path = require('path');
 const express = require('express');
 const multer = require('multer');
 const bodyParser = require('body-parser');
-const feedRoutes = require('./routes/feed');
 const mongoose = require('mongoose');
 var slash = require('slash');
 
+const feedRoutes = require('./routes/feed');
+const authRoutes = require('./routes/auth');
 const app = express();
 
 // FILE UPLOAD HANDLER ***************************/
@@ -55,18 +56,21 @@ app.use((req, res, next) => {
 });
 
 app.use('/feed', feedRoutes);
+app.use('/auth', authRoutes);
 
 // error handler 
 app.use((error, req, res, next) => {
   // console.trace()
   const status = error.statusCode || 500;
   const massage = error.massage;
+  const data = error.data;
   console.log('*******************error********************', error.statusCode, error)
-  res.status(status).json({ massage: massage });
+  res.status(status).json({ massage: massage, data: data });
 });
 
 mongoose
-  .connect('mongodb+srv://root:root@cluster0-8o3kc.mongodb.net/massages?retryWrites=true')
+  .connect('mongodb://127.0.0.1:27017')
+  // .connect('mongodb+srv://root:root@cluster0-8o3kc.mongodb.net/massages?retryWrites=true')
   .then(result => {
     app.listen(8000);
   })
