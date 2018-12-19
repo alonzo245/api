@@ -64,7 +64,7 @@ app.use((error, req, res, next) => {
   const status = error.statusCode || 500;
   const massage = error.massage;
   const data = error.data;
-  console.log('*******************error********************', error.statusCode, error)
+  console.log('*******************************************************************************error****************************************************************************************************************', error.statusCode, error)
   res.status(status).json({ massage: massage, data: data });
 });
 

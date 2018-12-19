@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const User = require('../models/user');
 const { validationResult } = require('express-validator/check');
 var slash = require('slash');
 
@@ -19,32 +20,35 @@ exports.createPost = (req, res, next) => {
     error.statusCode = 422;
     throw error;
   }
-  const imageUrl = req.file.path;
-  console.log(imageUrl)
-  // const imageUrl = 'req.file.path';
 
-  // get params and wrap them
+  const imageUrl = req.file.path;
   const title = req.body.title;
   const content = req.body.content;
+  let creator;
+
   const post = Post({
     title: title,
     content: content,
     imageUrl: imageUrl,
-    creator: { name: 'Alon' }
+    creator: req.userId
   });
-  console.log('aaa', {
-    title: title,
-    content: content,
-    imageUrl: imageUrl,
-    creator: { name: 'Alon' }
-  });
-  // save user data
+
   post.save()
     .then(result => {
-      //create db post
+      return User.findById(req.userId);
+    })
+    .then(user => {
+      creator = user;
+      user.posts.push(post);
+      return user.save();
+    })
+    .then(result => {
       res.status(201).json({
         massage: 'success',
-        post: result
+        post: result,
+        // for testing in postman
+        creator: { _id: creator._id, name: "alon alush" }
+        // creator: { _id: creator._id, name: creator.name }
       });
     })
     .catch(err => {
