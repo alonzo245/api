@@ -1,13 +1,43 @@
 const path = require('path');
+const fs = require('fs');
+const https = require('https');
 const express = require('express');
 const multer = require('multer');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 var slash = require('slash');
+var helmet = require('helmet');
+var compression = require('compression');
+var morgan = require('morgan');
+const debug = require('debug')('my-namespace')
+// const winston = require('winston')
 
 const feedRoutes = require('./routes/feed');
 const authRoutes = require('./routes/auth');
+
+// mainly for loggin personal modules
+const name = 'my-app'
+debug('booting %s', name)
+// winston.log('info', 'Hello log files!', {
+//   someKey: 'some-value'
+// })
+
 const app = express();
+
+//SSL Configuration
+const privatKey = fs.readFileSync('server.key');
+const certification = fs.readFileSync('server.cert')
+
+app.use(helmet());
+// mainly for websites and not apis
+app.use(compression());
+
+// loggin for incoming requests
+const accessLoStream = fs.createWriteStream(
+  path.join(__dirname, 'access.log'),
+  { flags: 'a' }
+);
+app.use(morgan('combined', { stream: accessLoStream }));
 
 // FILE UPLOAD HANDLER ***************************/
 var dirname = __dirname;
@@ -46,7 +76,7 @@ app.use(
 
 app.use('images',
   express.static(path.join(__dirname, 'images'))
-  );
+);
 
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -54,6 +84,7 @@ app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   next();
 });
+
 
 app.use('/feed', feedRoutes);
 app.use('/auth', authRoutes);
@@ -64,14 +95,15 @@ app.use((error, req, res, next) => {
   const status = error.statusCode || 500;
   const massage = error.massage;
   const data = error.data;
-  console.log('*******************************************************************************error****************************************************************************************************************', error.statusCode, error)
   res.status(status).json({ massage: massage, data: data });
 });
 
 mongoose
-  .connect('mongodb://127.0.0.1:27017')
-  // .connect('mongodb+srv://root:root@cluster0-8o3kc.mongodb.net/massages?retryWrites=true')
+  .connect(process.env.MONGO_DEVELOPMENT_CONNECTION || process.env.MONGO_PRODUCTION_CONNECTION)
+
   .then(result => {
-    app.listen(8000);
+  // for local testing HTTPS
+    // https.createServer({ key: privatKey, cert: certification }, app).listen(process.env.PORT || 8000);
+    app.listen(process.env.PORT || 8000);
   })
   .catch(err => console.log('err'));
