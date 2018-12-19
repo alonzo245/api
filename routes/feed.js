@@ -11,7 +11,7 @@ router.get('/post/:postId', isAuth, [
 ], feedController.getPost);
 
 // GET
-router.get('/posts', isAuth, feedController.getPosts);
+router.get('/posts', feedController.getPosts);
 
 
 // PUT
