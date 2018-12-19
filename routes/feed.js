@@ -25,6 +25,9 @@ router.post('/post', [
   body('content').trim().isLength({ min: 3 }),
 ], feedController.createPost);
 
+// DELETE 
+router.delete('/post/:postId', feedController.deletePost);
+
 
 // videos *********************************************/
 router.get('/videos', feedController.getVideos);
