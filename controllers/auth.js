@@ -30,7 +30,7 @@ exports.signup = (req, res, next) => {
       //create db post
       res.status(201).json({
         massage: 'user created',
-        result: result._id
+        userId: result._id
       });
     })
     .catch(err => {

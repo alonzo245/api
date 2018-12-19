@@ -64,9 +64,7 @@ exports.createPost = (req, res, next) => {
 
 // DELETE POST ******************************************/
 exports.deletePost = (req, res, next) => {
-
   const postId = req.params.postId;
-
   Post.findById(postId)
     .then(post => {
       // check logged
@@ -75,8 +73,22 @@ exports.deletePost = (req, res, next) => {
         error.statusCode = 404;
         throw error;
       }
+      
+      if (post.creator.toString() !== req.userId) {
+        const error = new Error('not authorized');
+        error.statusCode = 403;
+        throw error;
+      }
+
       clearImage(post.imageUrl);
       return Post.findByIdAndRemove(postId);
+    })
+    .then(result => {
+      return User.findById(req.userId);
+    })
+    .then(user => {
+      user.pull(postId);
+      return user.save();
     })
     .then(result => {
       res.status(200).json({
@@ -158,6 +170,7 @@ exports.updatePost = (req, res, next) => {
   if (req.file) {
     imageUrl = req.file.path;
   }
+  
   if (!imageUrl) {
     const error = new Error('no file picked');
     error.statusCode = 422;
@@ -169,6 +182,12 @@ exports.updatePost = (req, res, next) => {
       if (!post) {
         const error = new Error('could not find post');
         error.statusCode = 404;
+        throw error;
+      }
+
+      if (post.creator.toString() !== req.userId) {
+        const error = new Error('not authorized');
+        error.statusCode = 403;
         throw error;
       }
 
