@@ -99,7 +99,7 @@ app.use((error, req, res, next) => {
   const data = error.data;
   res.status(status).json({ massage: massage, data: data });
 });
-console.log(process.env.MONGO_DEVELOPMENT_CONNECTION || process.env.MONGO_PRODUCTION_CONNECTION)
+console.log('************************************',process.env.MONGO_CONNECTION)
 mongoose
   .connect(process.env.MONGO_CONNECTION)
 

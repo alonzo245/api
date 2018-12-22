@@ -1,7 +1,7 @@
 
 var mongoose = require('mongoose')
 var assert = require('assert')
-var data = require('./db/mostpopular.api.json')
+var data = require('./db/alonsvideos.api.json')
 // mongoose.connect('mongodb://localhost/videos');
 mongoose.connect('mongodb+srv://root:root@cluster0-8o3kc.mongodb.net/videos?retryWrites=true');
 
@@ -15,7 +15,7 @@ var videoSchema = new Schema({
   }
 );
 
-var Video = mongoose.model('Video', videoSchema)
+var Video = mongoose.model('AlonsVideo', videoSchema)
 
 data.items.map((videoObj) => {
   // console.log(video);

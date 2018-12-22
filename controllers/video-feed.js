@@ -1,11 +1,21 @@
 const fs = require('fs');
 const path = require('path');
-const Video = require('../models/video');
 const { validationResult } = require('express-validator/check');
 var slash = require('slash');
 
 // GET VIDEOS
 exports.getVideos = (req, res, next) => {
+
+  switch (req.query.category) {
+    case 'alonsvideos':
+      currentCategoy = 'alonsvideo';
+      break;
+      default:
+    case 'mostpopular':
+      currentCategoy = 'video';
+  }
+  const Video = require('../models/'+currentCategoy);
+
   const currentPage = req.query.page || 1;
   const perPage = 50;
   let totalItems;
@@ -13,18 +23,17 @@ exports.getVideos = (req, res, next) => {
     .countDocuments()
     .then(count => {
       totalItems = count;
-      console.log(Video.find())
       return Video.find()
         .skip((currentPage - 1) * perPage)
         .limit(perPage);
     })
     .then(videos => {
-      // console.log('**************************************', videos)
       res.status(200)
-        .json({ 
-          massage: 'videos fetched', 
-          videos: videos, 
-          totlaItems: totalItems })
+        .json({
+          massage: 'videos fetched',
+          videos: videos,
+          totlaItems: totalItems
+        })
     })
     .catch(err => {
       if (!err.statusCode) {
