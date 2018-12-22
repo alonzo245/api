@@ -101,7 +101,7 @@ app.use((error, req, res, next) => {
 });
 console.log(process.env.MONGO_DEVELOPMENT_CONNECTION || process.env.MONGO_PRODUCTION_CONNECTION)
 mongoose
-  .connect(process.env.MONGO_DEVELOPMENT_CONNECTION || process.env.MONGO_PRODUCTION_CONNECTION)
+  .connect(process.env.MONGO_CONNECTION)
 
   .then(result => {
   // for local testing HTTPS
