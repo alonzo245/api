@@ -13,6 +13,7 @@ const debug = require('debug')('my-namespace')
 // const winston = require('winston')
 
 const feedRoutes = require('./routes/feed');
+const videoFeedRoutes = require('./routes/video-feed');
 const authRoutes = require('./routes/auth');
 
 // mainly for loggin personal modules
@@ -86,6 +87,7 @@ app.use((req, res, next) => {
 });
 
 
+app.use('/video-feed', videoFeedRoutes);
 app.use('/feed', feedRoutes);
 app.use('/auth', authRoutes);
 
@@ -97,7 +99,7 @@ app.use((error, req, res, next) => {
   const data = error.data;
   res.status(status).json({ massage: massage, data: data });
 });
-
+console.log(process.env.MONGO_DEVELOPMENT_CONNECTION || process.env.MONGO_PRODUCTION_CONNECTION)
 mongoose
   .connect(process.env.MONGO_DEVELOPMENT_CONNECTION || process.env.MONGO_PRODUCTION_CONNECTION)
 
@@ -105,6 +107,6 @@ mongoose
   // for local testing HTTPS
     // https.createServer({ key: privatKey, cert: certification }, app)
     //.listen(process.env.PORT || 3000);
-    app.listen(process.env.PORT || 3000);
+    app.listen(process.env.PORT || 8000);
   })
   .catch(err => console.log('err'));
