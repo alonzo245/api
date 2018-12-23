@@ -4,9 +4,9 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
 exports.signup = (req, res, next) => {
+  
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    const error = new Error('########validation failed#########');
     error.statusCode = 422;
     error.data = errors.array();
     throw error;
@@ -15,7 +15,8 @@ exports.signup = (req, res, next) => {
   const email = req.body.email;
   const name = req.body.name;
   const password = req.body.password;
-
+  let loadedUser;
+  
   bcrypt
     .hash(password, 12)
     .then(hashedPw => {
@@ -27,10 +28,18 @@ exports.signup = (req, res, next) => {
       return user.save();
     })
     .then(result => {
-      //create db post
+
+      const token = jwt.sign({
+        email: email,
+        userId: result._id.toString()
+      }, process.env.APP_SECRET, { expiresIn: '1h' });
+
       res.status(201).json({
         massage: 'user created',
-        userId: result._id
+        userId: result._id,
+        idToken: token,
+        expiresIn: 3600,
+        error: false
       });
     })
     .catch(err => {
