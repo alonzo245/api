@@ -99,12 +99,15 @@ app.use((error, req, res, next) => {
   const data = error.data;
   res.status(status).json({ massage: massage, data: data });
 });
-console.log('************************************',process.env.MONGO_CONNECTION)
+
+const dbs = {
+  flixApi: "flix_api"
+}
 mongoose
-  .connect(process.env.MONGO_CONNECTION)
+.connect(process.env.MONGO_CONNECTION + dbs.flixApi + "?retryWrites=true")
 
   .then(result => {
-  // for local testing HTTPS
+    // for local testing HTTPS
     // https.createServer({ key: privatKey, cert: certification }, app)
     //.listen(process.env.PORT || 3000);
     app.listen(process.env.PORT || 8000);
