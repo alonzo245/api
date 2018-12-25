@@ -5,7 +5,8 @@ const User = require('../models/user');
 const authCtrl = require('../controllers/auth');
 
 const router = express.Router();
-router.put('/signup', [
+
+router.post('/signup', [
   //CHECK ONE
   body('email')
     .isEmail()

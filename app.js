@@ -86,7 +86,7 @@ app.use((req, res, next) => {
   next();
 });
 
-
+console.log('***************')
 app.use('/video-feed', videoFeedRoutes);
 app.use('/feed', feedRoutes);
 app.use('/auth', authRoutes);
