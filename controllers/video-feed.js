@@ -17,7 +17,7 @@ exports.getVideos = (req, res, next) => {
   const Video = require('../models/'+currentCategoy);
 
   const currentPage = req.query.page || 1;
-  const perPage = 50;
+  const perPage = req.query.items || 15;
   let totalItems;
   Video.find()
     .countDocuments()

@@ -3,7 +3,7 @@ var mongoose = require('mongoose')
 var assert = require('assert')
 var data = require('./db/alonsvideos.api.json')
 // mongoose.connect('mongodb://localhost/videos');
-mongoose.connect('mongodb+srv://root:root@cluster0-8o3kc.mongodb.net/videos?retryWrites=true');
+mongoose.connect('mongodb+srv://root:root@cluster0-8o3kc.mongodb.net/flix_api?retryWrites=true');
 
 // console.log(data.items[1])
 var Schema = mongoose.Schema
