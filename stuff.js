@@ -1,8 +1,9 @@
 
 var mongoose = require('mongoose')
 var assert = require('assert')
-var data = require('./db/alonsvideos.api.json')
-// mongoose.connect('mongodb://localhost/videos');
+var data = require('./db/mostpopular.api.json')
+// var data = require('./db/trandingil.json')
+// mongoose.connect('mongodb://localhost/flix_api');
 mongoose.connect('mongodb+srv://root:root@cluster0-8o3kc.mongodb.net/flix_api?retryWrites=true');
 
 // console.log(data.items[1])
@@ -15,7 +16,8 @@ var videoSchema = new Schema({
   }
 );
 
-var Video = mongoose.model('AlonsVideo', videoSchema)
+// var Video = mongoose.model('Alonsvideo', videoSchema)
+var Video = mongoose.model('Video', videoSchema)
 
 data.items.map((videoObj) => {
   // console.log(video);
