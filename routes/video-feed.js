@@ -3,6 +3,7 @@ const router = express.Router();
 // incomming parameters validation
 const { body } = require('express-validator/check');
 const videoFeedController = require('../controllers/video-feed');
+// const videoFeedController = require('../controllers/video-feed-redis');
 const isAuth = require('../middleware/is-auth');
 
 // GET
