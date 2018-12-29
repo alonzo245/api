@@ -29,13 +29,13 @@ exports.getVideos = (req, res, next) => {
 
 
   console.time("GET VIDEOS");
-  console.time("GET VIDEOS_REDIS");
+  console.time(`GET VIDEOS_REDIS video_${currentCategoy}`);
   /////////////////////////////////////////////
   return client.get(`video_${currentCategoy}`, (err, result) => {
     // If that key exist in Redis store
     if (result) {
       const resultJSON = JSON.parse(result);
-      console.timeEnd("GET VIDEOS_REDIS");
+      console.timeEnd(`GET VIDEOS_REDIS video_${currentCategoy}`, result);
       return res.status(200).json(resultJSON);
     } else {
       // Key does not exist in Redis store
@@ -61,7 +61,6 @@ exports.getVideos = (req, res, next) => {
             .setex(`video_${currentCategoy}`,
               86400,
               JSON.stringify({
-                source: 'Redis Cache',
                 ...db_result,
               }));
 
