@@ -20,7 +20,7 @@ exports.getVideos = (req, res, next) => {
   const currentPage = req.query.page || 1;
   const perPage = req.query.items || 15;
   let totalItems;
-  console.timeS("GET VIDEOS");
+  
   Video.find()
     .countDocuments()
     .then(count => {

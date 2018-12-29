@@ -105,7 +105,6 @@ const dbs = {
 }
 mongoose
 .connect(process.env.MONGO_CONNECTION + dbs.flixApi + "?retryWrites=true")
-
   .then(result => {
     // for local testing HTTPS
     // https.createServer({ key: privatKey, cert: certification }, app)
