@@ -1,4 +1,3 @@
-
 var mongoose = require('mongoose')
 var assert = require('assert')
 var data = require('./db/mostpopular.api.json')
@@ -65,3 +64,12 @@ data.items.map((videoObj) => {
 //   .then(data => console.log(data))
 //   .catch(e => console.log(e));
 //******************************************************************/
+
+
+db.posts.aggregate([
+  {
+    $lookup: {
+      from: "users", localField: "authorBy", foreignField: "_id", as: "creator"
+    }
+  }
+]).pretty()

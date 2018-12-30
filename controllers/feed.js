@@ -8,6 +8,7 @@ const Post = require('../models/post');
 
 // CREATE A POST *************************************/
 exports.createPost = (req, res, next) => {
+
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     const error = new Error('validation failed');
@@ -15,43 +16,34 @@ exports.createPost = (req, res, next) => {
     throw error;
   }
 
-  if (!req.file) {
-    const error = new Error('no image provided');
-    error.statusCode = 422;
-    throw error;
-  }
+  // if (!req.file) {
+  //   console.log('nnn')
+  //   const error = new Error('no image provided');
+  //   error.statusCode = 422;
+  //   throw error;
+  // }
 
-  const imageUrl = req.file.path;
+  // const imageUrl = req.file.path;
+  const imageUrl = 'none';
   const title = req.body.title;
   const content = req.body.content;
   let creator;
 
-  const post = Post({
+  const post = new Post({
     title: title,
     content: content,
     imageUrl: imageUrl,
     creator: req.userId
-  });
-
-  post.save()
-    .then(result => {
-      return User.findById(req.userId);
-    })
-    .then(user => {
-      creator = user;
-      user.posts.push(post);
-      return user.save();
-    })
-    .then(result => {
+  })
+    .save()
+    .then(saved => {
+      console.log('saved', saved)
       res.status(201).json({
-        massage: 'success',
-        post: result,
-        // for testing in postman
-        creator: { _id: creator._id, name: "alon alush" }
-        // creator: { _id: creator._id, name: creator.name }
+        massage: 'success'
       });
     })
     .catch(err => {
+      console.log('errrrrr')
       if (!err.statusCode) {
         err.statusCode = 500;
       }
@@ -73,7 +65,7 @@ exports.deletePost = (req, res, next) => {
         error.statusCode = 404;
         throw error;
       }
-      
+
       if (post.creator.toString() !== req.userId) {
         const error = new Error('not authorized');
         error.statusCode = 403;
@@ -131,13 +123,15 @@ exports.getPost = (req, res, next) => {
 // GET POSTS
 exports.getPosts = (req, res, next) => {
   const currentPage = req.query.page || 1;
-  const perPage = 2;
+  const perPage = 4;
   let totalItems;
   Post.find()
     .countDocuments()
     .then(count => {
       totalItems = count;
       return Post.find()
+        .sort([['createdAt', -1]])
+        .populate('creator', 'name')
         .skip((currentPage - 1) * perPage)
         .limit(perPage);
     })
@@ -170,7 +164,7 @@ exports.updatePost = (req, res, next) => {
   if (req.file) {
     imageUrl = req.file.path;
   }
-  
+
   if (!imageUrl) {
     const error = new Error('no file picked');
     error.statusCode = 422;

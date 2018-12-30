@@ -4,11 +4,11 @@ const Schema = mongoose.Schema;
 const postSchema = new Schema({
   title: {
     type: String,
-    required: true
+    required: false
   },
   imageUrl: {
     type: String,
-    required: true
+    required: false
   },
   content: {
     type: String,

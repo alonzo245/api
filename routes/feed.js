@@ -22,7 +22,7 @@ router.put('/post/:postId', isAuth, [
 
 // POST 
 router.post('/post', isAuth, [
-  body('title').trim().isLength({ min: 3 }),
+  // body('title').trim().isLength({ min: 3 }),
   body('content').trim().isLength({ min: 3 }),
 ], feedController.createPost);
 
